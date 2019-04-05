@@ -20,7 +20,7 @@ class App extends Component {
   };
 
   componentDidMount() {
-    // setTimeout(() => this.setState(dummyStore), 600)
+
     const url = `http://localhost:9090/`
     const endpoints = ['notes', 'folders']
     
@@ -107,11 +107,21 @@ class App extends Component {
     })
   }  
 
+  handleAddFolder = (folder) => {
+
+    this.setState({
+      folders: [...this.state.folders, folder]
+    })
+
+
+  }
+
   render() {
     const value = {
       notes: this.state.notes,
       folders: this.state.folders,
-      deleteNote: this.handleDeleteNote
+      deleteNote: this.handleDeleteNote,
+      addFolder: this.handleAddFolder
     }
 
     return (

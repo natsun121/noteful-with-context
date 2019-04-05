@@ -9,7 +9,7 @@ export default class NotePageMain extends React.Component {
   static contextType = ApiContext;
 
   render() {
-    const { notes } = this.context;
+    const { notes=[] } = this.context;
     const { noteId } = this.props.match.params
     const note = findNote(notes, noteId)
     return (
