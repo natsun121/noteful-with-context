@@ -3,9 +3,7 @@ import Note from '../Note/Note'
 import ApiContext from '../ApiContext'
 import { findNote } from '../notes-helpers'
 import './NotePageMain.css'
-import ApiContext from '../ApiContext';
 
-import { findNote } from '../notes-helpers'
 
 export default class NotePageMain extends React.Component {
   static contextType = ApiContext;

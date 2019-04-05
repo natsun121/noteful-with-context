@@ -29,7 +29,7 @@ class App extends Component {
         .then(res => {
         if (!res.ok) {
           this.setState({
-            error: 'something'
+            error: 'Unable to fetch data from server'
           })
         }
         return res.json()
@@ -39,7 +39,7 @@ class App extends Component {
         })) 
       
     ))
-    .catch(error => console.error(error))
+    .catch(error => console.log(error))
     
 
   }
@@ -73,7 +73,7 @@ class App extends Component {
   }
 
   renderMainRoutes() {
-    const { folders } = this.state
+
     return (
       <>
         {['/', '/folder/:folderId'].map(path =>
@@ -100,13 +100,23 @@ class App extends Component {
     )
   }
 
+  handleDeleteNote = (noteId) => {
+    const newNotes = this.state.notes.filter(n => n.id !== noteId)
+    this.setState({
+      notes: newNotes
+    })
+  }  
+
   render() {
     const value = {
       notes: this.state.notes,
-      folders: this.state.folders
+      folders: this.state.folders,
+      deleteNote: this.handleDeleteNote
     }
+
     return (
       <ApiContext.Provider value={value}>
+        {this.state.error && <div>{this.state.error}</div>}
         <div className='App'>
           <nav className='App__nav'>
             {this.renderNavRoutes()}

@@ -1,11 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, Redirect } from 'react-router-dom'
 import { format } from 'date-fns'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
-import config from '../config'
+
 import './Note.css'
-import ApiContext from '../ApiContext';
 
 export default class Note extends React.Component {
   static contextType = ApiContext;
@@ -17,7 +16,12 @@ export default class Note extends React.Component {
         'content-type': 'application/json'
       },
     })
-    this.context.deleteNote(noteId)
+      .then(() => {
+        this.context.deleteNote(noteId)
+        return <Redirect to='/' />
+      })
+    
+    
   }
 
   render() {

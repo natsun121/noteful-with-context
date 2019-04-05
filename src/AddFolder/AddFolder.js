@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
-import ApiContext from '../ApiContext'
-import config from '../config'
+
 import './AddFolder.css'
 
 export default class AddFolder extends Component {
@@ -17,14 +16,14 @@ export default class AddFolder extends Component {
   handleSubmit(event, name) {
     event.preventDefault();
     console.log(name)
-    fetch(`http://localhost:9090/folders`, {
-      method: 'POST',
-      headers: {
-        'content-type': 'application/json'
-      },
-      body: JSON.stringify(name)
+    // fetch(`http://localhost:9090/folders`, {
+    //   method: 'POST',
+    //   headers: {
+    //     'content-type': 'application/json'
+    //   },
+    //   body: JSON.stringify(name)
   
-    })
+    // })
     // .then(res => res.json())
     // .then(resJ => console.log(resJ))
 
