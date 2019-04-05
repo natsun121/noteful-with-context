@@ -7,65 +7,45 @@ import NoteListMain from '../NoteListMain/NoteListMain'
 import NotePageMain from '../NotePageMain/NotePageMain'
 import AddFolder from '../AddFolder/AddFolder'
 import AddNote from '../AddNote/AddNote'
-import ApiContext from '../ApiContext'
-import config from '../config'
+
+
 import './App.css'
+import ApiContext from '../ApiContext';
 
 class App extends Component {
   state = {
     notes: [],
     folders: [],
+    error: null
   };
 
   componentDidMount() {
-    Promise.all([
-      fetch(`${config.API_ENDPOINT}/notes`),
-      fetch(`${config.API_ENDPOINT}/folders`)
-    ])
-      .then(([notesRes, foldersRes]) => {
-        if (!notesRes.ok)
-          return notesRes.json().then(e => Promise.reject(e))
-        if (!foldersRes.ok)
-          return foldersRes.json().then(e => Promise.reject(e))
 
-        return Promise.all([
-          notesRes.json(),
-          foldersRes.json(),
-        ])
-      })
-      .then(([notes, folders]) => {
-        this.setState({ notes, folders })
-      })
-      .catch(error => {
-        console.error({ error })
-      })
-  }
+    const url = `http://localhost:9090/`
+    const endpoints = ['notes', 'folders']
+    
+    Promise.all(endpoints.map( e => 
+      fetch(url.concat(e))
+        .then(res => {
+        if (!res.ok) {
+          this.setState({
+            error: 'Unable to fetch data from server'
+          })
+        }
+        return res.json()
+        })
+        .then(resJson => this.setState({
+          [e]: resJson
+        })) 
+      
+    ))
+    .catch(error => console.log(error))
+    
 
-  handleAddFolder = folder => {
-    this.setState({
-      folders: [
-        ...this.state.folders,
-        folder
-      ]
-    })
-  }
-
-  handleAddNote = note => {
-    this.setState({
-      notes: [
-        ...this.state.notes,
-        note
-      ]
-    })
-  }
-
-  handleDeleteNote = noteId => {
-    this.setState({
-      notes: this.state.notes.filter(note => note.id !== noteId)
-    })
   }
 
   renderNavRoutes() {
+
     return (
       <>
         {['/', '/folder/:folderId'].map(path =>
@@ -93,6 +73,7 @@ class App extends Component {
   }
 
   renderMainRoutes() {
+
     return (
       <>
         {['/', '/folder/:folderId'].map(path =>
@@ -119,16 +100,33 @@ class App extends Component {
     )
   }
 
+  handleDeleteNote = (noteId) => {
+    const newNotes = this.state.notes.filter(n => n.id !== noteId)
+    this.setState({
+      notes: newNotes
+    })
+  }  
+
+  handleAddFolder = (folder) => {
+
+    this.setState({
+      folders: [...this.state.folders, folder]
+    })
+
+
+  }
+
   render() {
     const value = {
       notes: this.state.notes,
       folders: this.state.folders,
-      addFolder: this.handleAddFolder,
-      addNote: this.handleAddNote,
       deleteNote: this.handleDeleteNote,
+      addFolder: this.handleAddFolder
     }
+
     return (
       <ApiContext.Provider value={value}>
+        {this.state.error && <div>{this.state.error}</div>}
         <div className='App'>
           <nav className='App__nav'>
             {this.renderNavRoutes()}

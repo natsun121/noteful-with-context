@@ -3,18 +3,14 @@ import { Link } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Note from '../Note/Note'
 import CircleButton from '../CircleButton/CircleButton'
-import ApiContext from '../ApiContext'
-import { getNotesForFolder } from '../notes-helpers'
 import './NoteListMain.css'
 
-export default class NoteListMain extends React.Component {
-  static defaultProps = {
-    match: {
-      params: {}
-    }
-  }
-  static contextType = ApiContext
+import { getNotesForFolder } from '../notes-helpers';
+import ApiContext from '../ApiContext';
 
+class NoteListMain extends React.Component {
+  static contextType = ApiContext;
+  
   render() {
     const { folderId } = this.props.match.params
     const { notes=[] } = this.context
@@ -48,3 +44,10 @@ export default class NoteListMain extends React.Component {
     )
   }
 }
+
+NoteListMain.defaultProps = {
+  notes: [],
+}
+
+
+export default NoteListMain

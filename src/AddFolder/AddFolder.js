@@ -1,56 +1,106 @@
 import React, { Component } from 'react'
 import NotefulForm from '../NotefulForm/NotefulForm'
-import ApiContext from '../ApiContext'
-import config from '../config'
+import ApiContext from '../ApiContext';
+import ValidationError from '../ValidationError/ValidationError'
+
 import './AddFolder.css'
 
 export default class AddFolder extends Component {
-  static defaultProps = {
-    history: {
-      push: () => { }
-    },
-  }
+
   static contextType = ApiContext;
 
-  handleSubmit = e => {
-    e.preventDefault()
-    const folder = {
-      name: e.target['folder-name'].value
+  state = {
+    name: '',
+    nameValid: false,
+    formValid: false,
+    validationMessages: {
+      name: ''
     }
-    fetch(`${config.API_ENDPOINT}/folders`, {
+  }
+
+  validateName(fieldValue) {
+    const { folders } = this.context;
+    const fieldErrors = {...this.state.validationMessages};
+    let hasError = false;
+
+    fieldValue = fieldValue.trim();
+    if (fieldValue.length === 0) {
+
+      fieldErrors.name = 'Name is required';
+      hasError = true;
+    } else {
+
+      if (typeof folders.find(f => f.name === fieldValue) === 'object') {
+        console.log('in taken')
+        fieldErrors.name = 'Name is taken';
+        hasError = true;
+      } else {
+      fieldErrors.name = '';
+      hasError = false;
+      }
+    }
+  
+
+    this.setState({
+      validationMessages: fieldErrors,
+      nameValid: !hasError
+    }, this.formValid );
+
+  }
+
+  formValid() {
+    this.setState({
+      formValid: this.state.nameValid
+    });
+  }
+
+  updateName(name) {
+    this.setState({name}, () => {this.validateName(name)})
+  }
+
+  handleSubmit(event, name) {
+    event.preventDefault();
+
+    const url = `http://localhost:9090/folders`
+    const folder = {
+      name
+    }
+    fetch(url, {
       method: 'POST',
       headers: {
-        'content-type': 'application/json'
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify(folder),
+      body: JSON.stringify(folder)
     })
-      .then(res => {
-        if (!res.ok)
-          return res.json().then(e => Promise.reject(e))
-        return res.json()
-      })
-      .then(folder => {
-        this.context.addFolder(folder)
-        this.props.history.push(`/folder/${folder.id}`)
-      })
-      .catch(error => {
-        console.error({ error })
-      })
+    .then(res => {
+      if(!res.ok) {
+        throw new Error('unable to post folder to server')
+      }
+      return res.json()
+    })
+    .then(resJ => {
+      this.props.history.push('/')
+      this.context.addFolder(resJ)
+    })
+ 
+
+
   }
 
   render() {
     return (
       <section className='AddFolder'>
         <h2>Create a folder</h2>
-        <NotefulForm onSubmit={this.handleSubmit}>
+        <NotefulForm onSubmit={e => this.handleSubmit(e, this.state.name)}>
           <div className='field'>
             <label htmlFor='folder-name-input'>
               Name
             </label>
-            <input type='text' id='folder-name-input' name='folder-name' />
+            <input type='text' id='folder-name-input' onChange={e => this.updateName(e.target.value)} />
+            <ValidationError hasError={!this.state.nameValid} message={this.state.validationMessages.name}/>
           </div>
           <div className='buttons'>
-            <button type='submit'>
+            <button type='submit' disabled={!this.state.formValid}>
               Add folder
             </button>
           </div>

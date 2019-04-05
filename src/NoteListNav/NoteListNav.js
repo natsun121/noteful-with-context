@@ -6,7 +6,7 @@ import ApiContext from '../ApiContext'
 import { countNotesForFolder } from '../notes-helpers'
 import './NoteListNav.css'
 
-export default class NoteListNav extends React.Component {
+class NoteListNav extends React.Component {
   static contextType = ApiContext;
 
   render() {
@@ -44,3 +44,5 @@ export default class NoteListNav extends React.Component {
     )
   }
 }
+
+export default NoteListNav
