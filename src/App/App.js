@@ -94,14 +94,7 @@ class App extends Component {
         />
         <Route
           path='/add-note'
-          render={routeProps => {
-            return (
-              <AddNote
-                {...routeProps}
-                folders={folders}
-              />
-            )
-          }}
+          component={AddNote}
         />
       </>
     )
