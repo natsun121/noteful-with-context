@@ -6,12 +6,18 @@ import './NotePageMain.css'
 
 
 export default class NotePageMain extends React.Component {
+  static defaultProps = {
+    match: {
+      params: {}
+    }
+  }
+
   static contextType = ApiContext;
 
   render() {
     const { notes=[] } = this.context;
     const { noteId } = this.props.match.params
-    const note = findNote(notes, noteId)
+    const note = findNote(notes, noteId) || { content: ''}
     return (
       <section className='NotePageMain'>
         <Note

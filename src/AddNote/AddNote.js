@@ -143,7 +143,7 @@ export default class AddNote extends Component {
   }
 
   render() {
-    const { folders } = this.context;
+    const { folders=[] } = this.context;
     const { name, content, folderId } = this.state;
     return (
       <section className='AddNote'>

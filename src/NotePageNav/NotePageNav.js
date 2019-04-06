@@ -7,12 +7,23 @@ import { findNote, findFolder } from '../notes-helpers'
 import ApiContext from '../ApiContext';
 
 export default class NotePageNav extends React.Component {
+  static defaultProps = {
+    match: {
+      params: {
+
+      }
+    },
+    history: {
+      goBack: () => {}
+    }
+  }
+
   static contextType = ApiContext
   render() {
 
     const { folders, notes } = this.context;
     const { noteId } = this.props.match.params
-    const note = findNote(notes, noteId) || {};
+    const note = findNote(notes, noteId) || { content: ''};
     const folder = findFolder(folders, note.folderId)
     return (
       <div className='NotePageNav'>
@@ -34,11 +45,5 @@ export default class NotePageNav extends React.Component {
       </div>
     )
 
-  }
-}
-
-NotePageNav.defaultProps = {
-  history: {
-    goBack: () => {}
   }
 }

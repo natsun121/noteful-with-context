@@ -12,6 +12,13 @@ import NoteListMainError from './NoteListMainError';
 import PropTypes from 'prop-types';
 
 class NoteListMain extends React.Component {
+  static defaultProps = {
+    match: {
+      params: {
+      }
+    }
+  }
+
   static contextType = ApiContext;
   
   render() {
@@ -51,9 +58,6 @@ class NoteListMain extends React.Component {
   }
 }
 
-NoteListMain.defaultProps = {
-  notes: [],
-}
 
 NoteListMain.proptypes = {
   notes: PropTypes.array.isRequired,

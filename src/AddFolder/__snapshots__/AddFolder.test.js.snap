@@ -7,29 +7,39 @@ exports[`AddItemForm component renders the complete form 1`] = `
   <h2>
     Create a folder
   </h2>
-  <NotefulForm>
-    <div
-      className="field"
+  <AddFolderError>
+    <NotefulForm
+      onSubmit={[Function]}
     >
-      <label
-        htmlFor="folder-name-input"
+      <div
+        className="field"
       >
-        Name
-      </label>
-      <input
-        id="folder-name-input"
-        type="text"
-      />
-    </div>
-    <div
-      className="buttons"
-    >
-      <button
-        type="submit"
+        <label
+          htmlFor="folder-name-input"
+        >
+          Name
+        </label>
+        <input
+          id="folder-name-input"
+          onChange={[Function]}
+          type="text"
+        />
+        <ValidationError
+          hasError={true}
+          message=""
+        />
+      </div>
+      <div
+        className="buttons"
       >
-        Add folder
-      </button>
-    </div>
-  </NotefulForm>
+        <button
+          disabled={true}
+          type="submit"
+        >
+          Add folder
+        </button>
+      </div>
+    </NotefulForm>
+  </AddFolderError>
 </section>
 `;
