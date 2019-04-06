@@ -5,8 +5,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import ApiContext from '../ApiContext'
 
 import './Note.css'
+import NoteError from './NoteError';
+import PropTypes from 'prop-types';
 
-export default class Note extends React.Component {
+class Note extends React.Component {
   static contextType = ApiContext;
 
   handeDelete = (noteId) => {
@@ -26,31 +28,42 @@ export default class Note extends React.Component {
 
   render() {
     return (
-      <div className='Note'>
-        <h2 className='Note__title'>
-          <Link to={`/note/${this.props.id}`}>
-            {this.props.name}
-          </Link>
-        </h2>
-        <button 
-          className='Note__delete' 
-          type='button'
-          onClick={() => this.handeDelete(this.props.id)}>
-          <FontAwesomeIcon icon='trash-alt' />
-          {' '}
-          remove
-        </button>
-        <div className='Note__dates'>
-          <div className='Note__dates-modified'>
-            Modified
+      <NoteError>
+        <div className='Note'>
+          <h2 className='Note__title'>
+            <Link to={`/note/${this.props.id}`}>
+              {this.props.name}
+            </Link>
+          </h2>
+          <button 
+            className='Note__delete' 
+            type='button'
+            onClick={() => this.handeDelete(this.props.id)}>
+            <FontAwesomeIcon icon='trash-alt' />
             {' '}
-            <span className='Date'>
-              {format(this.props.modified, 'Do MMM YYYY')}
-            </span>
+            remove
+          </button>
+          <div className='Note__dates'>
+            <div className='Note__dates-modified'>
+              Modified
+              {' '}
+              <span className='Date'>
+                {format(this.props.modified, 'Do MMM YYYY')}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
+      </NoteError>
     )   
 
   }
 }
+
+Note.proptypes = {
+  name: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  modified: PropTypes.string
+}
+
+
+export default Note

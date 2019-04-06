@@ -11,12 +11,13 @@ import AddNote from '../AddNote/AddNote'
 
 import './App.css'
 import ApiContext from '../ApiContext';
+import AppErrorBoundary from './AppErrorBoundary';
 
 class App extends Component {
   state = {
     notes: [],
     folders: [],
-    error: null
+    error: ''
   };
 
   componentDidMount() {
@@ -28,9 +29,7 @@ class App extends Component {
       fetch(url.concat(e))
         .then(res => {
         if (!res.ok) {
-          this.setState({
-            error: 'Unable to fetch data from server'
-          })
+          throw new Error('Unable to fetch from server');
         }
         return res.json()
         })
@@ -39,7 +38,11 @@ class App extends Component {
         })) 
       
     ))
-    .catch(error => console.log(error))
+    .catch(error => {
+      this.setState({
+        error: 'Unable to fetch data from server'
+      })
+    })
     
 
   }
@@ -134,27 +137,37 @@ class App extends Component {
       addNote: this.handleAddNote
     }
 
+    const { error } = this.state;
+
     return (
-      <ApiContext.Provider value={value}>
-        {this.state.error && <div>{this.state.error}</div>}
-        <div className='App'>
-          <nav className='App__nav'>
-            {this.renderNavRoutes()}
-          </nav>
-          <header className='App__header'>
-            <h1>
-              <Link to='/'>Noteful</Link>
-              {' '}
-              <FontAwesomeIcon icon='check-double' />
-            </h1>
-          </header>
-          <main className='App__main'>
-            {this.renderMainRoutes()}
-          </main>
-        </div>
-      </ApiContext.Provider>
+      <>
+      <AppErrorBoundary>
+
+        {error !== '' && <div className="error">{error}</div>}
+        <ApiContext.Provider value={value}>
+          
+          <div className='App'>
+            <nav className='App__nav'>
+              {this.renderNavRoutes()}
+            </nav>
+            <header className='App__header'>
+              <h1>
+                <Link to='/'>Noteful</Link>
+                {' '}
+                <FontAwesomeIcon icon='check-double' />
+              </h1>
+            </header>
+            <main className='App__main'>
+              {this.renderMainRoutes()}
+            </main>
+          </div>
+        </ApiContext.Provider>
+      </AppErrorBoundary>
+      </>
     )
   }
 }
+
+
 
 export default App

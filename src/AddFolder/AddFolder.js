@@ -4,6 +4,7 @@ import ApiContext from '../ApiContext';
 import ValidationError from '../ValidationError/ValidationError'
 
 import './AddFolder.css'
+import AddFolderError from './AddFolderError';
 
 export default class AddFolder extends Component {
 
@@ -15,7 +16,8 @@ export default class AddFolder extends Component {
     formValid: false,
     validationMessages: {
       name: ''
-    }
+    },
+    error: null
   }
 
   validateName(fieldValue) {
@@ -35,8 +37,8 @@ export default class AddFolder extends Component {
         fieldErrors.name = 'Name is taken';
         hasError = true;
       } else {
-      fieldErrors.name = '';
-      hasError = false;
+        fieldErrors.name = '';
+        hasError = false;
       }
     }
   
@@ -74,7 +76,8 @@ export default class AddFolder extends Component {
     })
     .then(res => {
       if(!res.ok) {
-        throw new Error('unable to post folder to server')
+        throw new Error('unable to post folder to server');
+
       }
       return res.json()
     })
@@ -82,6 +85,7 @@ export default class AddFolder extends Component {
       this.props.history.push('/')
       this.context.addFolder(resJ)
     })
+    .catch(error => console.log(error))
  
 
 
@@ -91,20 +95,22 @@ export default class AddFolder extends Component {
     return (
       <section className='AddFolder'>
         <h2>Create a folder</h2>
-        <NotefulForm onSubmit={e => this.handleSubmit(e, this.state.name)}>
-          <div className='field'>
-            <label htmlFor='folder-name-input'>
-              Name
-            </label>
-            <input type='text' id='folder-name-input' onChange={e => this.updateName(e.target.value)} />
-            <ValidationError hasError={!this.state.nameValid} message={this.state.validationMessages.name}/>
-          </div>
-          <div className='buttons'>
-            <button type='submit' disabled={!this.state.formValid}>
-              Add folder
-            </button>
-          </div>
-        </NotefulForm>
+        <AddFolderError>
+          <NotefulForm onSubmit={e => this.handleSubmit(e, this.state.name)}>
+            <div className='field'>
+              <label htmlFor='folder-name-input'>
+                Name
+              </label>
+              <input type='text' id='folder-name-input' onChange={e => this.updateName(e.target.value)} />
+              <ValidationError hasError={!this.state.nameValid} message={this.state.validationMessages.name}/>
+            </div>
+            <div className='buttons'>
+              <button type='submit' disabled={!this.state.formValid}>
+                Add folder
+              </button>
+            </div>
+          </NotefulForm>
+      </AddFolderError>
       </section>
     )
   }
